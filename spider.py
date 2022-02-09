@@ -36,7 +36,12 @@ def get_info(driver,keyword):
     print("检索关键词{}共得到{}页，3秒后开始爬取".format(keyword,str(page)))
     time.sleep(3)
 
-    for i in range(0,int(page)+1):
+    try:
+        page = int(page)+1
+    except:
+        page = 1
+
+    for i in range(0,page):
         print("正在爬取关键词{}下第{}页".format(keyword,str(i+1)))
         projects_list = driver.find_element_by_class_name("list-container-box").find_elements_by_css_selector("[class='item-box layui-card ']") 
         for project in projects_list:
@@ -66,6 +71,8 @@ def get_info(driver,keyword):
             time.sleep(8)
         except:
             print("error")
+    
+    return (out_Data)
 
 if __name__ == '__main__':
     
@@ -73,13 +80,13 @@ if __name__ == '__main__':
     driver = get_driver()
 
     #输入登录信息，在登录页面输入账号密码，如果15s不够，可以自己改
-    time.sleep(30)
+    time.sleep(40)
     
     #点击展开选项
     get_input(driver)
 
     #关键词列表
-    keywords=['垄断企业','协同演化']
+    keywords=['垄断企业','价值共创']
 
     #获取网页信息
     data=[]
@@ -87,9 +94,9 @@ if __name__ == '__main__':
         if i == 0:
             data = get_info(driver,val)
         else:
-            temp_data = get_info(driver,i)
+            temp_data = get_info(driver,val)
             data.extend(temp_data)
     
     #导出结果
     df_out_data = pd.DataFrame.from_dict(data)
-    df_out_data.to_excel("国自然数据.xlsx")
+    df_out_data.to_excel("国自然数据2021年.xlsx")
